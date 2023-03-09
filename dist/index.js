@@ -13904,10 +13904,10 @@ const yaml = __nccwpck_require__(1917);
 async function main() {
     try {
         const githubToken = core.getInput('github-token');
-        const configFile = core.getInput('config-file');
+        const configurationPath = core.getInput('configuration-path');
 
         const client = github.getOctokit(githubToken);
-        const config = await getConfig(client, configFile);
+        const config = await getConfig(client, configurationPath);
 
         const app = new App(client, config);
         await app.run();
@@ -13916,26 +13916,34 @@ async function main() {
     }
 }
 
-async function getConfig(client, configFile) {
+async function getConfig(client, configurationPath) {
+    if (!configurationPath) {
+        throw new Error(`No configuration file specified`);
+    }
+
     let configData;
     try {
         ({
             data: { content: configData }
         } = await client.rest.repos.getContent({
             ...github.context.repo,
-            path: configFile
+            path: configurationPath
         }));
     } catch (err) {
         if (err.status === 404) {
-            throw new Error(`Missing configuration file (${configFile})`);
+            throw new Error(`Missing configuration file (${configurationPath})`);
         } else {
             throw err;
         }
     }
 
+    if (!configData) {
+        throw new Error(`Empty configuration file (${configurationPath})`);
+    }
+
     const config = yaml.load(Buffer.from(configData, 'base64').toString());
     if (!config) {
-        throw new Error(`Empty configuration file (${configFile})`);
+        throw new Error(`Invalid configuration file (${configurationPath})`);
     }
 
     return config;
@@ -13954,7 +13962,7 @@ class App {
             return;
         }
 
-        issueNumber = payload.issue?.number;
+        let issueNumber = payload.issue?.number;
         if (!issueNumber) {
             return;
         }
