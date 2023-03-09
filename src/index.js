@@ -18,6 +18,10 @@ async function main() {
 }
 
 async function getConfig(client, configFile) {
+    if (!configFile) {
+        throw new Error(`No configuration file specified`);
+    }
+
     let configData;
     try {
         ({
@@ -34,9 +38,13 @@ async function getConfig(client, configFile) {
         }
     }
 
+    if (!configData) {
+        throw new Error(`Empty configuration file (${configFile})`);
+    }
+
     const config = yaml.load(Buffer.from(configData, 'base64').toString());
     if (!config) {
-        throw new Error(`Empty configuration file (${configFile})`);
+        throw new Error(`Invalid configuration file (${configFile})`);
     }
 
     return config;
