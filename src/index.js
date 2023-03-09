@@ -5,7 +5,7 @@ const yaml = require('js-yaml');
 async function main() {
     try {
         const githubToken = core.getInput('github-token');
-        const configFile = core.getInput('config-file');
+        const configFile = core.getInput('configuration-file');
 
         const client = github.getOctokit(githubToken);
         const config = await getConfig(client, configFile);
