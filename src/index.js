@@ -55,7 +55,7 @@ class App {
             return;
         }
 
-        issueNumber = payload.issue?.number;
+        let issueNumber = payload.issue?.number;
         if (!issueNumber) {
             return;
         }
