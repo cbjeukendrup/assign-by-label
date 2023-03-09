@@ -1,0 +1,13 @@
+name: 'Assign by label'
+description: 'Assign or unassign people when labels are added or removed'
+author: 'Casper Jeukendrup'
+inputs:
+  github-token:
+    description: 'GitHub access token'
+    default: '${{ github.token }}'
+  config-file:
+    description: 'Configuration file path'
+    default: '.github/issue_assign_by_label_config.yml'
+runs:
+  using: 'node16'
+  main: 'index.js'

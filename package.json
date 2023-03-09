@@ -1,0 +1,13 @@
+{
+  "name": "assign-by-label",
+  "version": "1.0.0",
+  "description": "Assign or unassign people when labels are added or removed",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "GPL-3.0-only",
+  "private": true
+}
