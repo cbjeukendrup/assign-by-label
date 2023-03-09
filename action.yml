@@ -10,4 +10,4 @@ inputs:
     default: '.github/issue_assign_by_label_config.yml'
 runs:
   using: 'node16'
-  main: 'src/index.js'
+  main: 'dist/index.js'
