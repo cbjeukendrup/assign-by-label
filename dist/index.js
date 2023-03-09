@@ -13958,26 +13958,25 @@ class App {
     async run() {
         const payload = github.context.payload;
 
-        if (payload.sender.type === 'Bot') {
-            return;
-        }
-
         let issueNumber = payload.issue?.number;
         if (!issueNumber) {
             return;
         }
 
         if (payload.action === 'labeled') {
-            await this.assignUsers(issueNumber, this.config[payload.label.name]);
+            await this.assignUsers(issueNumber, payload.label.name, this.config[payload.label.name]);
         } else if (payload.action === 'unlabeled') {
-            await this.unassignUsers(issueNumber, this.config[payload.label.name]);
+            await this.unassignUsers(issueNumber, payload.label.name, this.config[payload.label.name]);
         }
     }
 
-    async assignUsers(issueNumber, users) {
+    async assignUsers(issueNumber, label, users) {
         if (!users) {
+            core.info(`No one to be assigned for label ${label}`);
             return;
         }
+
+        core.info(`Assigning ${users.join(', ')} for label ${label}`);
 
         await this.client.rest.issues.addAssignees({
             owner: github.context.repo.owner,
@@ -13987,10 +13986,13 @@ class App {
         });
     }
 
-    async unassignUsers(issueNumber, users) {
+    async unassignUsers(issueNumber, label, users) {
         if (!users) {
+            core.info(`No one to be unassigned for label ${label}`);
             return;
         }
+
+        core.info(`Unassigning ${users.join(', ')} for label ${label}`);
 
         await this.client.rest.issues.removeAssignees({
             owner: github.context.repo.owner,
